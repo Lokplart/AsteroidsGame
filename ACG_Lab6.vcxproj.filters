@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="bullet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="ship.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="map.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="asteroid.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{41c60606-8cbe-4bd0-b3a7-c866136bc7e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="classes">
+      <UniqueIdentifier>{25d076c3-729d-463c-95af-f038ae441ff2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bullet.frg">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="bullet.ver">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="ship.frg">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="ship.ver">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="asteroid.frg">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="asteroid.ver">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bullet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="ship.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="asteroid.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
