@@ -28,8 +28,7 @@ void Map::update_asteroids() {
 	unsigned int i = 0;
 
 	while (i < asteroids_size) {
-		
-		glm::mat4 ast_mat = glm::translate(this->asteroids[i].get_asteroid(), glm::vec3(this->asteroids[i].get_speed(), 0.0f, 0.0f));
+		glm::mat4 ast_mat = glm::translate(this->asteroids[i].get_asteroid(), glm::vec3(this->asteroids[i].dir_x, this->asteroids[i].dir_y, 0.0f));
 		int status = this->asteroids[i].get_status();
 		float x = ast_mat[3][0], y = ast_mat[3][1];
 		if (status == 0 && Map::in_play_zone(x, y)) {
@@ -54,51 +53,17 @@ void Map::spawn_asteroids(float ship_x, float ship_y) {
 		float spawn_point_x = (0 + static_cast <float> (rand()) / (static_cast<float>(RAND_MAX / (2)))) - 1;
 		float spawn_point_y = (0 + static_cast <float> (rand()) / (static_cast<float>(RAND_MAX / (2)))) - 1;
 		
-		float asteroid_rot = (std::min(spawn_point_x, spawn_point_y)) / (2) * 90.0f;
-		//float asteroid_rot = (spawn_point_y) / (2) * 90.0f;
-		/*
-		if (spawn_point_x < 0) {
-			spawn_point_x -= 2.5;
-		}
-		else {
-			spawn_point_x += 2.5;
-		}
-		if (spawn_point_y < 0) {
-			spawn_point_y -= 2.5;
-		}
-		else {
-			spawn_point_x += 2.5;
-		}
-		*/
 		
+		if (spawn_point_x < 0)	{ spawn_point_x -= 2.5; }
+		else					{ spawn_point_x += 2.5; }
+		if (spawn_point_y < 0)	{ spawn_point_y -= 2.5; }
+		else					{ spawn_point_x += 2.5; }
 		
+
 		this->last_spawn_time = current_time;
 		glm::mat4 ast_mat(1.0f); 
-		std::cout << spawn_point_x - 1 << " " << spawn_point_y - 1 << "\n";
-		ast_mat[3][0] = spawn_point_x;
-		ast_mat[3][1] = spawn_point_y;
-		
-		if (spawn_point_x < 0) {
-			if (spawn_point_y < 0) {
-				ast_mat = glm::rotate(ast_mat, -asteroid_rot, glm::vec3(0.0f, 0.0f, 1.0f));
-			}
-			else {
-				ast_mat = glm::rotate(ast_mat, -asteroid_rot * -(float)(spawn_point_x < spawn_point_y), glm::vec3(0.0f, 0.0f, 1.0f));
-			}
-		}
-		else {
-			ast_mat = glm::rotate(ast_mat, 180.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-			if (spawn_point_y < 0) {
-				ast_mat = glm::rotate(ast_mat, asteroid_rot * -(float)(spawn_point_x < spawn_point_y), glm::vec3(0.0f, 0.0f, 1.0f));
-			}
-			else {
-				ast_mat = glm::rotate(ast_mat, asteroid_rot, glm::vec3(0.0f, 0.0f, 1.0f));
-			}
-		}
-		std::cout << "=======\n";
-
-		
-		this->asteroids.push_back(Asteroid(ast_mat));
+		ast_mat[3][0] = spawn_point_x; ast_mat[3][1] = spawn_point_y;
+		this->asteroids.push_back(Asteroid(ast_mat, (ship_x - spawn_point_x) * Asteroid::asteroid_speed, (ship_y - spawn_point_y) * Asteroid::asteroid_speed));
 	}
 }
 

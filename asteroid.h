@@ -8,11 +8,13 @@ private:
 	glm::mat4 ast_mat;
 	glm::vec4 color = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 
-	float asteroid_speed = 0.01f;
 	int status = 0;
 
 public:
-	Asteroid(glm::mat4 ast_mat);
+	static float asteroid_speed;
+	float dir_x = 0.0f;
+	float dir_y = 0.0f;
+	Asteroid(glm::mat4 ast_mat, float dir_x, float dir_y);
 	~Asteroid();
 
 	glm::mat4 get_asteroid();

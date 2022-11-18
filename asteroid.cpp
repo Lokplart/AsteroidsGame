@@ -1,8 +1,13 @@
 #include "asteroid.h"
 #define PI 3.14159265
 
-Asteroid::Asteroid(glm::mat4 ast_mat) {
+
+float Asteroid::asteroid_speed = 0.05f;
+
+Asteroid::Asteroid(glm::mat4 ast_mat, float dir_x, float dir_y) {
 	this->ast_mat = ast_mat;
+	this->dir_x = dir_x;
+	this->dir_y = dir_y;
 }
 
 glm::mat4 Asteroid::get_asteroid() {
@@ -10,6 +15,7 @@ glm::mat4 Asteroid::get_asteroid() {
 }
 void Asteroid::set_asteroid(glm::mat4 ast_mat) {
 	this->ast_mat = ast_mat;
+	
 }
 
 
