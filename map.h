@@ -20,5 +20,8 @@ public:
 	static bool in_play_zone(double x, double y);
 	static bool in_spawn_zone(double x, double y);
 
+
+	void update_asteroids();
+	void update_game();
 	void update();
 };
