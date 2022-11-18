@@ -33,6 +33,8 @@ void Asteroid::set_status(int status) {
 float Asteroid::get_speed() {
 	return this->asteroid_speed;
 }
+
+//aici luam direct speed fara Asteroid::asteroid_speed
 void Asteroid::set_speed(float speed) {
 	this->asteroid_speed = speed;
 }

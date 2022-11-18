@@ -139,6 +139,8 @@ int main(void) {
 
 	glfwSetFramebufferSizeCallback(window, window_callback);
 
+
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwSwapBuffers(window); glfwPollEvents(); glClear(GL_COLOR_BUFFER_BIT); handle_input();
 
@@ -151,7 +153,6 @@ int main(void) {
 			ship.bullets[i].update();
 		}
 		glBindVertexArray(0);
-
 		map.update_game();
 		map.spawn_asteroids(ship.x(), ship.y());
 		//std::cout << ship.angle() << "\n";
