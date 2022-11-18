@@ -19,4 +19,6 @@ public:
 	static bool in_radius(double x, double y, double radius);
 	static bool in_play_zone(double x, double y);
 	static bool in_spawn_zone(double x, double y);
+
+	void update();
 };

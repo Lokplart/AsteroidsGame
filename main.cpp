@@ -35,7 +35,7 @@ void handle_input() {
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		double current_time = glfwGetTime();
-		if (current_time - shot_time > 0.5) {
+		if (current_time - shot_time > 0.1) {
 			ship.shoot();
 			shot_time = current_time;
 		}
