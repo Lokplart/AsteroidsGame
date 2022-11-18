@@ -28,11 +28,12 @@ void Map::update_asteroids() {
 	unsigned int i = 0;
 
 	while (i < asteroids_size) {
-		glm::mat4 ast_mat = glm::translate(this->asteroids[i].get_asteroid(), glm::vec3(this->asteroids[i].dir_x, this->asteroids[i].dir_y, 0.0f));
 		int status = this->asteroids[i].get_status();
-		float x = ast_mat[3][0], y = ast_mat[3][1];
+		float x = this->asteroids[i].x(), y = this->asteroids[i].y();
 		if (status == 0 && Map::in_play_zone(x, y)) {
 			this->asteroids[i].set_status(1);
+			glm::mat4 ast_mat = glm::translate(this->asteroids[i].get_asteroid(), glm::vec3(this->asteroids[i].dir_x, this->asteroids[i].dir_y, 0.0f));
+			this->asteroids[i++].set_asteroid(ast_mat);
 		}
 		else {
 			if (status == 1 && Map::in_spawn_zone(x, y) || status == 2) {
@@ -40,6 +41,7 @@ void Map::update_asteroids() {
 				asteroids_size--;
 			}
 			else {
+				glm::mat4 ast_mat = glm::translate(this->asteroids[i].get_asteroid(), glm::vec3(this->asteroids[i].dir_x, this->asteroids[i].dir_y, 0.0f));
 				this->asteroids[i++].set_asteroid(ast_mat);
 			}
 		}
