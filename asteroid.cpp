@@ -2,7 +2,8 @@
 #define PI 3.14159265
 
 
-float Asteroid::asteroid_speed = 0.05f;
+float Asteroid::asteroid_speed = 0.02f;
+float Asteroid::asteroid_max_speed = 0.01f;
 
 Asteroid::Asteroid(glm::mat4 ast_mat, float dir_x, float dir_y) {
 	this->ast_mat = ast_mat;

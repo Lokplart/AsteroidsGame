@@ -23,6 +23,7 @@ public:
 	int width, height;
 	const static double play_zone_radius;
 	const static double spawn_zone_radius;
+	static clock_t current_time;
 	std::vector<Asteroid> asteroids;
 
 	Map(int width, int height);
@@ -31,7 +32,7 @@ public:
 	static bool in_play_zone(double x, double y);
 	static bool in_spawn_zone(double x, double y);
 
-	void spawn_asteroids(float ship_x, float ship_y);
+	void spawn_asteroids(float ship_x, float ship_y, double delta_time);
 
 	void update_asteroids();
 	void update_game();

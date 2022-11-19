@@ -14,6 +14,15 @@ GLFWwindow* window;
 Map map = Map(1024, 768);
 Ship ship = Ship();
 
+
+float get_delta_time() {
+	float current_time = glfwGetTime();
+	float delta_time = current_time - Map::current_time;
+	Map::current_time = current_time;
+	return delta_time;
+}
+
+
 float rotation_speed = 3.0f;
 float movement_speed = 0.005f;
 double shot_time = 0;
@@ -51,7 +60,6 @@ void draw_object(glm::mat4 object, glm::vec4 color, GLuint shader, GLuint vao, i
 }
 
 void window_callback(GLFWwindow* window, int new_width, int new_height) { glViewport(0, 0, new_width, new_height); }
-
 
 int main(void) {
 	if (!glfwInit()) {
@@ -144,6 +152,8 @@ int main(void) {
 	while (!glfwWindowShouldClose(window)) {
 		glfwSwapBuffers(window); glfwPollEvents(); glClear(GL_COLOR_BUFFER_BIT); handle_input();
 
+		float delta_time = get_delta_time();
+
 		draw_object(ship.get_ship(), ship.get_color(), ship_shader, ship_vao, 3); glBindVertexArray(0);
 		ship.update();
 
@@ -154,11 +164,12 @@ int main(void) {
 		}
 		glBindVertexArray(0);
 		map.update_game();
-		map.spawn_asteroids(ship.x(), ship.y());
+		map.spawn_asteroids(ship.x(), ship.y(), delta_time);
 		//std::cout << ship.angle() << "\n";
 		for (unsigned int i = 0; i < map.asteroids.size(); i++) {
-			//glm::mat4 ast_mat = map.asteroids[i].get_asteroid();
-			//std::cout << ast_mat[3][0] << " " << ast_mat[3][1] << "\n-----------------\n";
+			glm::mat4 ast_mat = map.asteroids[i].get_asteroid();
+			std::cout << ast_mat[3][0] << " " << ast_mat[3][1] << "\n---\n";
+			std::cout << map.asteroids[i].dir_x << " " << map.asteroids[i].dir_y << "\n---\n";
 			draw_object(map.asteroids[i].get_asteroid(), map.asteroids[i].get_color(), asteroid_shader, asteroid_vao, 24);
 		}
 		glBindVertexArray(0);

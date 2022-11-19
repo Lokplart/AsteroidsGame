@@ -2,12 +2,12 @@
 #define PI 3.14159265
 const double Map::play_zone_radius = 1.5;
 const double Map::spawn_zone_radius = 2;
+clock_t Map::current_time = clock();
 
 Map::Map(int width, int height) {
 	this->width = width;
 	this->height = height;	
 	srand(static_cast <unsigned> (time(0)));
-
 }
 
 
@@ -39,11 +39,11 @@ void Map::update_asteroids() {
 		delta_time = current_frame - last_frame;
 		last_frame = current_frame;
 
-		std::cout << (float)(delta_time * speed) << "==================================\n";//test 1...2...3 esti gay
+		// std::cout << (float)(delta_time * speed) << "==================================\n";//test 1...2...3 esti gay
 
 		if (status == 0 && Map::in_play_zone(x, y)) {
 			this->asteroids[i].set_status(1);
-			this->asteroids[i].set_speed((float)(delta_time * speed)); //folosim functia pe care ai abandonat-o cum isi abandoneaza si barbatii negrii copiii
+			//this->asteroids[i].set_speed((float)(delta_time * speed)); //folosim functia pe care ai abandonat-o cum isi abandoneaza si barbatii negrii copiii
 			glm::mat4 ast_mat = glm::translate(this->asteroids[i].get_asteroid(), glm::vec3(this->asteroids[i].dir_x, this->asteroids[i].dir_y, 0.0f));
 			this->asteroids[i++].set_asteroid(ast_mat);
 		}
@@ -53,7 +53,7 @@ void Map::update_asteroids() {
 				asteroids_size--;
 			}
 			else {
-				this->asteroids[i].set_speed((float)(delta_time * speed));//inainte de translateuri ca asa e politicos
+				//this->asteroids[i].set_speed((float)(delta_time * speed));//inainte de translateuri ca asa e politicos
 				glm::mat4 ast_mat = glm::translate(this->asteroids[i].get_asteroid(), glm::vec3(this->asteroids[i].dir_x, this->asteroids[i].dir_y, 0.0f));
 				this->asteroids[i++].set_asteroid(ast_mat);
 			}
@@ -61,26 +61,37 @@ void Map::update_asteroids() {
 	}
 }
 
-void Map::spawn_asteroids(float ship_x, float ship_y) {
+void Map::spawn_asteroids(float ship_x, float ship_y, double delta_time) {
 	//float spawn_point = Map::play_zone_radius + static_cast <float> (rand()) / (static_cast<float>(RAND_MAX / (Map::spawn_zone_radius - Map::play_zone_radius)));
+
 	double current_time = glfwGetTime();
 	if (current_time - this->last_spawn_time > this->spawn_rate && this->asteroids.size() < this->wave_size) {
-		float spawn_point_x = (0 + static_cast <float> (rand()) / (static_cast<float>(RAND_MAX / (2)))) - 1;
-		float spawn_point_y = (0 + static_cast <float> (rand()) / (static_cast<float>(RAND_MAX / (2)))) - 1;
+		float spawn_point_x = (10 + static_cast <float> (rand()) / (static_cast<float>(RAND_MAX / (30)))) / 10 - 2;
+		float spawn_point_y = (10 + static_cast <float> (rand()) / (static_cast<float>(RAND_MAX / (30)))) / 10 - 2;
 		
-		
-		if (spawn_point_x < 0)	{ spawn_point_x -= 2.5; }
-		else					{ spawn_point_x += 2.5; }
-		if (spawn_point_y < 0)	{ spawn_point_y -= 2.5; }
-		else					{ spawn_point_x += 2.5; }
-		
-		float delta_time = current_time - this->last_spawn_time; //ti am furat current_time ul ca de ce nu
-		float speed = 0.005;
+		//std::cout << spawn_point_x << " " << spawn_point_y << "\n---\n";
+		if (spawn_point_x < 0.0f)	{ spawn_point_x -= 2.5; }
+		else						{ spawn_point_x += 2.5; }
+		if (spawn_point_y < 0.0f)	{ spawn_point_y -= 2.5; }
+		else						{ spawn_point_y += 2.5; }
+
+		//std::cout << spawn_point_x << " " << spawn_point_y << "\n________________\n";
+
 		this->last_spawn_time = current_time;
-		glm::mat4 ast_mat(1.0f); 
-		ast_mat[3][0] = spawn_point_x; ast_mat[3][1] = spawn_point_y;
-		this->asteroids.push_back(Asteroid(ast_mat, (ship_x - spawn_point_x) * 0.002f, (ship_y - spawn_point_y) * 0.002f));//am inlocuit Asteroid::asteroid_speed dar puteam sa pun si delta time * speed acolo,doar sa nu fie prea mica sau prea mare viteza
-		std::cout << (float)(delta_time * speed) << "==================================\n";
+		glm::mat4 ast_mat(1.0f); ast_mat[3][0] = spawn_point_x; ast_mat[3][1] = spawn_point_y;
+
+		float ast_x_speed = (ship_x - spawn_point_x) * Asteroid::asteroid_speed * (float)delta_time;
+		float ast_y_speed = (ship_y - spawn_point_y) * Asteroid::asteroid_speed * (float)delta_time;
+		//std::cout << ast_x_speed << " " << ast_y_speed << "\n=================\n";
+
+		if (std::abs(ast_x_speed) > Asteroid::asteroid_max_speed || std::abs(ast_y_speed) > Asteroid::asteroid_max_speed) {
+			std::cout << "in reducer";
+			ast_x_speed /= 10;
+			ast_y_speed /= 10;
+		}
+		
+		//std::cout << ship_y << " " << ship_y << " --- " << spawn_point_x << " " << spawn_point_y << "\n====\n";
+		this->asteroids.push_back(Asteroid(ast_mat, ast_x_speed, ast_y_speed));
 	}
 }
 
