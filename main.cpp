@@ -167,13 +167,13 @@ int main(void) {
 		map.spawn_asteroids(ship.x(), ship.y(), delta_time);
 		//std::cout << ship.angle() << "\n";
 		for (unsigned int i = 0; i < map.asteroids.size(); i++) {
-			glm::mat4 ast_mat = map.asteroids[i].get_asteroid();
-			std::cout << ast_mat[3][0] << " " << ast_mat[3][1] << "\n---\n";
-			std::cout << map.asteroids[i].dir_x << " " << map.asteroids[i].dir_y << "\n---\n";
+//			glm::mat4 ast_mat = map.asteroids[i].get_asteroid();
+//			std::cout << ast_mat[3][0] << " " << ast_mat[3][1] << "\n---\n";
+//			std::cout << map.asteroids[i].dir_x << " " << map.asteroids[i].dir_y << "\n---\n";
 			draw_object(map.asteroids[i].get_asteroid(), map.asteroids[i].get_color(), asteroid_shader, asteroid_vao, 24);
 		}
 		glBindVertexArray(0);
-		map.update_asteroids();
+		map.update_asteroids(delta_time);
 	}
 
 	glDeleteBuffers(1, &ship_vbo);   glDeleteBuffers(1, &ship_ibo);   glDeleteVertexArrays(1, &ship_vao);   glDeleteProgram(ship_shader);

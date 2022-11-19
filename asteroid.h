@@ -13,6 +13,8 @@ private:
 public:
 	static float asteroid_speed;
 	static float asteroid_max_speed;
+	static float asteroid_min_speed;
+	static float asteroid_base_speed;
 	float dir_x = 0.0f;
 	float dir_y = 0.0f;
 	Asteroid(glm::mat4 ast_mat, float dir_x, float dir_y);

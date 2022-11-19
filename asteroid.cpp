@@ -4,6 +4,8 @@
 
 float Asteroid::asteroid_speed = 0.02f;
 float Asteroid::asteroid_max_speed = 0.01f;
+float Asteroid::asteroid_min_speed = 0.001f;
+float Asteroid::asteroid_base_speed = Asteroid::asteroid_speed;
 
 Asteroid::Asteroid(glm::mat4 ast_mat, float dir_x, float dir_y) {
 	this->ast_mat = ast_mat;

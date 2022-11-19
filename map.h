@@ -13,7 +13,7 @@
 class Map {
 private:
 	int difficulty = 1;
-	int wave_size = 0;
+	int wave_size = 9;
 	int current_wave = 0;
 	int asteroids_destoryed = 0;
 	double last_spawn_time = 0.0;
@@ -34,6 +34,6 @@ public:
 
 	void spawn_asteroids(float ship_x, float ship_y, double delta_time);
 
-	void update_asteroids();
+	void update_asteroids(float delta_time);
 	void update_game();
 };
