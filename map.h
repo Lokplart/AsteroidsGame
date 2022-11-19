@@ -36,4 +36,5 @@ public:
 
 	void update_asteroids(float delta_time);
 	void update_game();
+	void reset();
 };

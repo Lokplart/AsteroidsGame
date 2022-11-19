@@ -64,7 +64,7 @@ void Map::spawn_asteroids(float ship_x, float ship_y, double delta_time) {
 		if (spawn_point_y < 0.0f)	{ spawn_point_y -= 2.5; }
 		else						{ spawn_point_y += 2.5; }
 
-		std::cout << spawn_point_x << " " << spawn_point_y << "\n________________\n";
+		//std::cout << spawn_point_x << " " << spawn_point_y << "\n________________\n";
 
 		this->last_spawn_time = current_time;
 		glm::mat4 ast_mat(1.0f); ast_mat[3][0] = spawn_point_x; ast_mat[3][1] = spawn_point_y;
@@ -74,12 +74,10 @@ void Map::spawn_asteroids(float ship_x, float ship_y, double delta_time) {
 		//std::cout << ast_x_speed << " " << ast_y_speed << "\n=================\n";
 
 		if (std::abs(ast_x_speed) > Asteroid::asteroid_max_speed || std::abs(ast_y_speed) > Asteroid::asteroid_max_speed) {
-			std::cout << "in reducer";
 			ast_x_speed /= 10;
 			ast_y_speed /= 10;
 		}
 		else if (std::abs(ast_x_speed) < Asteroid::asteroid_min_speed || std::abs(ast_y_speed) < Asteroid::asteroid_min_speed) {
-			std::cout << "in increaser";
 			ast_x_speed *= 10;
 			ast_y_speed *= 10;
 		}
@@ -97,3 +95,11 @@ void Map::update_game() {
 	}
 }
 
+void Map::reset() {
+	this->difficulty = 1;
+	this->wave_size = 9;
+	this->current_wave = 0;
+	this->asteroids_destoryed = 0;
+	this->last_spawn_time = 0.0;
+	this->spawn_rate = 1;
+}
