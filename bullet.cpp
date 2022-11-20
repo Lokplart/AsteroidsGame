@@ -19,14 +19,34 @@ double Bullet::angle() {
 
 int Bullet::get_status() { return this->status; }
 
-void Bullet::update() {
-	this->bullet_mat = glm::translate(this->bullet_mat, glm::vec3(0.0f, this->bullet_speed, 0.0f));
-	if (this->status == 0 && Map::in_play_zone(this->x(), this->y())) {
-		this->status = 1; 
+int Bullet::check_collision_circle_square(std::vector<Asteroid> asteroids) {
+	for (unsigned int i = 0; i < asteroids.size(); i++) {
+		if (sqrt(pow(asteroids[i].y() - this->y(), 2) + pow(asteroids[i].x() - this->x(), 2)) < 0.05f) {
+			return i;
+		}
 	}
-	else if (this->status == 1 && Map::in_spawn_zone(this->x(), this->y())) {
-		this->status = 2;
+	return -1;
+};
+
+int Bullet::update(std::vector<Asteroid> asteroids) {
+	this->bullet_mat = glm::translate(this->bullet_mat, glm::vec3(0.0f, this->bullet_speed, 0.0f));
+	if (this->status == 0 && Persistent::in_play_zone(this->x(), this->y())) {
+		this->status = 1; 
+		return -1;
+	}
+	else {
+		int ast_index = this->check_collision_circle_square(asteroids);
+		if (this->status == 1 && Persistent::in_spawn_zone(this->x(), this->y())) {
+			this->status = 2;
+		}
+		else if (ast_index != -1) {
+			this->status = 2;
+			return ast_index;
+		}
+		return -1;
 	}
 }
+
+
 
 Bullet::~Bullet() {}

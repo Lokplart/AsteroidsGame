@@ -27,6 +27,8 @@ public:
 
 	Bullet get_available_bullet();
 
+	
+
 	void move_forward(float speed);
 	void move_backwards(float speed);
 	void rotate_left(float angle);

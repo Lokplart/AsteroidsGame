@@ -17,55 +17,10 @@ Ship ship = Ship();
 
 float get_delta_time() {
 	float current_time = glfwGetTime();
-	float delta_time = current_time - Map::current_time;
-	Map::current_time = current_time;
+	float delta_time = current_time - Persistent::current_time;
+	Persistent::current_time = current_time;
 	return delta_time;
 }
-
-
-float clamp(float value, float min, float max) {
-	return std::max(min, std::min(max, value));
-}
-
-bool check_collision_circle_triangle(Asteroid asteroid, Ship ship) {
-	// get center point circle first 
-	glm::vec2 center(asteroid.x() + 0.05f,asteroid.y() + 0.05);
-	// calculate AABB info (center, half-extents)
-	glm::vec2 aabb_half_extents(ship.x() / 2.0f, ship.y() / 2.0f);
-	glm::vec2 aabb_center(
-		ship.x() + aabb_half_extents.x,
-		ship.y() + aabb_half_extents.y
-	);
-
-	// get difference vector between both centers
-	glm::vec2 difference = center - aabb_center;
-	glm::vec2 clamped = glm::clamp(difference, -aabb_half_extents, aabb_half_extents);
-	// add clamped value to AABB_center and we get the value of box closest to circle
-	glm::vec2 closest = aabb_center + clamped;
-	// retrieve vector between center circle and closest point AABB and check if length <= radius
-	difference = closest - center;
-	return glm::length(difference) < 0.05f;
-}
-
-bool check_collision_circle_square(Asteroid asteroid, Bullet bullet) {
-	// get center point circle first 
-	glm::vec2 center(asteroid.x() + 0.05f, asteroid.y() + 0.05);
-	// calculate AABB info (center, half-extents)
-	glm::vec2 aabb_half_extents(bullet.x() / 2.0f, bullet.y() / 2.0f);
-	glm::vec2 aabb_center(
-		bullet.x() + aabb_half_extents.x,
-		bullet.y() + aabb_half_extents.y
-	);
-
-	// get difference vector between both centers
-	glm::vec2 difference = center - aabb_center;
-	glm::vec2 clamped = glm::clamp(difference, -aabb_half_extents, aabb_half_extents);
-	// add clamped value to AABB_center and we get the value of box closest to circle
-	glm::vec2 closest = aabb_center + clamped;
-	// retrieve vector between center circle and closest point AABB and check if length <= radius
-	difference = closest - center;
-	return glm::length(difference) < 0.05f;
-};
 
 float rotation_speed = 3.0f;
 float movement_speed = 0.005f;
@@ -79,7 +34,7 @@ void draw_object(glm::mat4 object, glm::vec4 color, GLuint shader, GLuint vao, i
 	glDrawElements(GL_TRIANGLES, indices, GL_UNSIGNED_INT, 0);
 }
 
-void handle_input(GLuint ship_shader, GLuint ship_vao, bool* destroyed_ptr) {
+void handle_input(GLuint ship_shader, GLuint ship_vao) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
@@ -103,12 +58,13 @@ void handle_input(GLuint ship_shader, GLuint ship_vao, bool* destroyed_ptr) {
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
-		*destroyed_ptr = false;
+		Persistent::isDestroyed = false;
 		map.asteroids.clear();
 		ship = Ship();
 		draw_object(ship.get_ship(), ship.get_color(), ship_shader, ship_vao, 3); glBindVertexArray(0);
 		ship.update();
 		map.reset();
+		std::cout << "AHA! You live again! Get ready!";
 	}
 }
 
@@ -202,57 +158,37 @@ int main(void) {
 
 	glfwSetFramebufferSizeCallback(window, window_callback);
 
-	//int i = 0;
-	bool isDestroyed = false;
-	bool* destroyed_ptr = &isDestroyed;
+	
 	while (!glfwWindowShouldClose(window)) {
 		//i++;
-		glfwSwapBuffers(window); glfwPollEvents(); glClear(GL_COLOR_BUFFER_BIT); handle_input(ship_shader,ship_vao,destroyed_ptr);
+		glfwSwapBuffers(window); glfwPollEvents(); glClear(GL_COLOR_BUFFER_BIT); handle_input(ship_shader, ship_vao);
 
 		float delta_time = get_delta_time();
-		if (!isDestroyed)
-		{
+		if (!Persistent::isDestroyed) {
 			draw_object(ship.get_ship(), ship.get_color(), ship_shader, ship_vao, 3); glBindVertexArray(0);
-			ship.update();
-		}
-		
 
-		//std::cout << ship.bullets.size() << "\n";
-		for (unsigned int i = 0; i < ship.bullets.size(); i++) {
-			draw_object(ship.bullets[i].get_bullet(), ship.bullets[i].get_color(), bullet_shader, bullet_vao, 6);
-			ship.bullets[i].update();
-		}
-		glBindVertexArray(0);
-		map.update_game();
-		map.spawn_asteroids(ship.x(), ship.y(), delta_time);
-		//std::cout << ship.angle() << "\n";
-		for (unsigned int i = 0; i < map.asteroids.size(); i++) {
-//			glm::mat4 ast_mat = map.asteroids[i].get_asteroid();
-//			std::cout << ast_mat[3][0] << " " << ast_mat[3][1] << "\n---\n";
-//			std::cout << map.asteroids[i].dir_x << " " << map.asteroids[i].dir_y << "\n---\n";
-			draw_object(map.asteroids[i].get_asteroid(), map.asteroids[i].get_color(), asteroid_shader, asteroid_vao, 24);
-		}
-		glBindVertexArray(0);
-		map.update_asteroids(delta_time);
 
-		for (int i = 0; i < map.asteroids.size(); i++)
-		{
-			if (check_collision_circle_triangle(map.asteroids[i],ship) && !isDestroyed)
-			{
-				isDestroyed = true;
-				std::cout << "YOU DIED\n";
-			}
-			for (int j = 0; j < ship.bullets.size(); j++)
-			{
-				if (check_collision_circle_square(map.asteroids[i],ship.bullets[j]))
-				{
-					map.asteroids[i].set_status(2);
-					map.update_asteroids(delta_time);
-					//ship.bullets[j].set;
+			for (unsigned int i = 0; i < ship.bullets.size(); i++) {
+				draw_object(ship.bullets[i].get_bullet(), ship.bullets[i].get_color(), bullet_shader, bullet_vao, 6);
+				int ast_index = ship.bullets[i].update(map.asteroids);
+				if (ast_index != -1) {
+					map.asteroids[ast_index].set_status(2);
+					map.asteroids_destoryed += 1;
 				}
 			}
-		}
+			ship.update();
 
+
+			glBindVertexArray(0);
+			map.update_game();
+			map.spawn_asteroids(ship.x(), ship.y(), delta_time);
+
+			map.update_asteroids(delta_time, ship.x(), ship.y());
+			for (unsigned int i = 0; i < map.asteroids.size(); i++) {
+				draw_object(map.asteroids[i].get_asteroid(), map.asteroids[i].get_color(), asteroid_shader, asteroid_vao, 24);
+			}
+			glBindVertexArray(0);
+		}
 
 		//std::cout << "=========" << i << " ==========\n";
 		

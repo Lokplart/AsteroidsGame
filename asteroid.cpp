@@ -54,8 +54,4 @@ double Asteroid::angle() {
 	}
 }
 
-void update() {
-
-}
-
 Asteroid::~Asteroid() {}

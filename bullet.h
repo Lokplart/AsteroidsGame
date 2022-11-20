@@ -1,8 +1,11 @@
 #pragma once
 #include <math.h>
+#include <vector>
+#include <iostream>
 #include "dependente\glm\gtc\matrix_transform.hpp"
 #include "dependente\glm\gtc\type_ptr.hpp"
-#include "map.h"
+#include "persistent.h"
+#include "asteroid.h"
 
 
 class Bullet {
@@ -22,10 +25,11 @@ public:
 
 	int get_status();
 	// void set_active(bool val);
+	int check_collision_circle_square(std::vector<Asteroid> asteroids);
 
 	float x();
 	float y();
 	double angle();
 
-	void update();
+	int update(std::vector<Asteroid> asteroids);
 };

@@ -15,6 +15,9 @@
     <ClCompile Include="asteroid.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="persistent.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shaders">
@@ -55,6 +58,9 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="asteroid.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="persistent.h">
       <Filter>classes</Filter>
     </ClInclude>
   </ItemGroup>

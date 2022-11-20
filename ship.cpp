@@ -24,6 +24,7 @@ void Ship::rotate_right(float angle)   { this->ship_mat = glm::rotate(this->ship
 
 void Ship::shoot() { this->bullets.push_back(Bullet(this->get_ship())); }
 
+
 void Ship::update() {
 	int bullets_size = this->bullets.size();
 	int i = 0;

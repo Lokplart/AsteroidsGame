@@ -1,8 +1,5 @@
 #include "map.h"
 #define PI 3.14159265
-const double Map::play_zone_radius = 1.5;
-const double Map::spawn_zone_radius = 2;
-clock_t Map::current_time = clock();
 
 Map::Map(int width, int height) {
 	this->width = width;
@@ -11,34 +8,32 @@ Map::Map(int width, int height) {
 }
 
 
-bool Map::in_radius(double x, double y, double radius) {
-	return pow(x, 2) + pow(y, 2) <= pow(radius, 2);
+bool Map::check_collision_circle_triangle(float ast_x, float ast_y, float ship_x, float ship_y) {
+	return sqrt(pow(ast_y - ship_y, 2) + pow(ast_x - ship_x, 2)) < 0.05f;
 }
 
-bool Map::in_play_zone(double x, double y) {
-	return Map::in_radius(x, y, Map::play_zone_radius);
-}
-
-bool Map::in_spawn_zone(double x, double y) {
-	return Map::in_radius(x, y, Map::spawn_zone_radius) && !Map::in_radius(x, y, Map::play_zone_radius);
-}
-
-void Map::update_asteroids(float delta_time) {
+void Map::update_asteroids(float delta_time, float ship_x, float ship_y) {
 	unsigned int asteroids_size = this->asteroids.size();
 	unsigned int i = 0;
 
 	Asteroid::asteroid_speed = Asteroid::asteroid_base_speed * delta_time;
 	while (i < asteroids_size) {
-		int status = this->asteroids[i].get_status();
 		float x = this->asteroids[i].x(), y = this->asteroids[i].y();
+
+		if (this->check_collision_circle_triangle(x ,y, ship_x, ship_y)) {
+			this->asteroids[i].set_status(2);
+			Persistent::isDestroyed = true;
+			std::cout << "You Died :D\nYou got " << Persistent::score << " points this attempt, nice one!\n\nHit 'Enter' and give it another shot!";
+		}
+		int status = this->asteroids[i].get_status();
 		
-		if (status == 0 && Map::in_play_zone(x, y)) {
+		if (status == 0 && Persistent::in_play_zone(x, y)) {
 			this->asteroids[i].set_status(1);
 			glm::mat4 ast_mat = glm::translate(this->asteroids[i].get_asteroid(), glm::vec3(this->asteroids[i].dir_x, this->asteroids[i].dir_y, 0.0f));
 			this->asteroids[i++].set_asteroid(ast_mat);
 		}
 		else {
-			if (status == 1 && Map::in_spawn_zone(x, y) || status == 2) {
+			if (status == 1 && Persistent::in_spawn_zone(x, y) || status == 2) {
 				this->asteroids.erase(this->asteroids.begin() + i);
 				asteroids_size--;
 			}
@@ -92,6 +87,7 @@ void Map::update_game() {
 		this->wave_size += ++this->current_wave;
 		this->difficulty += (int)(this->current_wave % 5 == 0);
 		this->spawn_rate += (float)(this->difficulty / 10.0f);
+		Persistent::score += this->asteroids_destoryed;
 	}
 }
 

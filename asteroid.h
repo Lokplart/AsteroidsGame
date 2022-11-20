@@ -34,6 +34,4 @@ public:
 	float x();
 	float y();
 	double angle();
-
-	void update();
 };
