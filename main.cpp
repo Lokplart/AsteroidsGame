@@ -77,7 +77,7 @@ int main(void) {
 		fprintf(stderr, "Failed to initialize GLFW\n");
 		return -1;
 	}
-	window = glfwCreateWindow(map.width, map.height, "3D demo", NULL, NULL);
+	window = glfwCreateWindow(map.width, map.height, "Asteroids", NULL, NULL);
 	if (window == NULL) {
 		fprintf(stderr, "Failed to open GLFW window.");
 		glfwTerminate();

@@ -91,7 +91,6 @@ void Map::update_game() {
 		this->difficulty += (int)(this->current_wave % 5 == 0);
 		this->spawn_rate += (float)(this->difficulty / 10.0f);
 		Persistent::score += this->asteroids_destoryed;
-		std::cout << Persistent::score;
 	}
 }
 
