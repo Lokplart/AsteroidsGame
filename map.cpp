@@ -84,10 +84,14 @@ void Map::spawn_asteroids(float ship_x, float ship_y, double delta_time) {
 
 void Map::update_game() {
 	if (this->asteroids_destoryed == this->wave_size) { 
+		if (wave_size != 0) {
+			std::cout << "Watch out! It just got harder!\n";
+		}
 		this->wave_size += ++this->current_wave;
 		this->difficulty += (int)(this->current_wave % 5 == 0);
 		this->spawn_rate += (float)(this->difficulty / 10.0f);
 		Persistent::score += this->asteroids_destoryed;
+		std::cout << Persistent::score;
 	}
 }
 
@@ -98,4 +102,5 @@ void Map::reset() {
 	this->asteroids_destoryed = 0;
 	this->last_spawn_time = 0.0;
 	this->spawn_rate = 1;
+	Persistent::score = 0;
 }
